@@ -30,4 +30,5 @@ venv/
 .omc/
 .vscode/
 .idea/
+.claude/
 .DS_Store
