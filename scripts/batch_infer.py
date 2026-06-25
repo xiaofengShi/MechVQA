@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-MechVQA SFT (Qwen3-VL-4B-Instruct) 批量推理验证脚本
+MechVQA 批量推理验证脚本（支持 SFT / RL 双模式）
 
-用 vLLM 对 ckpt/MechVQA_SFT 做多模态 batch 推理（每条样本：中文问题 + 1 张机械图纸）。
+用 vLLM 对 ckpt/MechVQA_SFT 或 ckpt/MechVQA_RL 做多模态 batch 推理（每条：中文问题 + 1 张机械图纸）。
 适配自 EasyR1/data_mechvlm/qwen_vl_vllm_batch_infer.py（原面向 Qwen3-VL-235B-Thinking）。
 
-与原脚本的关键差异（4B-Instruct 适配）：
-    - 引擎参数：TP=8→1, MAX_MODEL_LEN 51200→8192, MAX_NEW_TOKENS 40960→1024
-    - 去掉 enable_thinking（4B-Instruct 非 thinking 模型，chat_template 无相关逻辑）
-    - 有效性判定：不再要求 </think>+JSON，改为非空文本即成功（直接问答输出自由文本）
-    - 数据：读取项目内置的扁平 jsonl（data/test_samples.jsonl），自包含不依赖外部数据
-    - 输出字段：保存 question / gt_answer / pred_answer 并排，便于人工核对
+两种模式（顶部 MODE 切换）：
+  - sft: 直接问答。system 提示 + 图片 + question，整段输出即答案。
+  - rl : thinking 模型。用 prompts/mech_r1.jinja 渲染 question 作为 user content
+         （复现 RL 训练 format_prompt，字面 \\n 原样保留，无独立 system），
+         输出 <think>...</think><answer>...</answer>，提取 <answer> 作为答案。
+
+与原 235B 脚本差异：TP=1 / 适中上下文 / 去掉 enable_thinking / 内置扁平 jsonl / GT 与预测并排。
 
 运行（在项目根目录执行）：
     env -u PYTHONPATH CUDA_VISIBLE_DEVICES=0 \\
       /share/project/kouqian/miniconda3/envs/anyrag/bin/python scripts/batch_infer.py
-
-说明：
-    - env -u PYTHONPATH 必须：系统 PYTHONPATH 指向 python3.10 旧包会污染 import；
-      脚本入口也做了 sys.path 清理兜底。
-    - 内置数据 data/ 随仓库提供，clone 后即可运行，无需外部数据。
 """
 
 # ---- 清理被污染的 PYTHONPATH（系统指向 python3.10 的旧包会干扰 import）----
@@ -28,13 +24,12 @@ import os
 import sys
 sys.path = [p for p in sys.path if p and "/python3.10/" not in p and "llm_lib" not in p]
 
-# ---- Triton/vLLM kernel 编译缓存目录 ----
-# 默认 ~/.triton 在 HOME=/root 不可写的环境会抛 FileNotFoundError，故改放项目内。
-# 必须在 import torch/vllm 之前设置；可用环境变量 TRITON_CACHE_DIR 覆盖。
+# ---- Triton/vLLM kernel 编译缓存目录（默认 ~/.triton 在 HOME=/root 不可写会报错）----
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("TRITON_CACHE_DIR", os.path.join(_PROJECT_ROOT, ".triton_cache"))
 
 import json
+import re
 import time
 from pathlib import Path
 
@@ -44,35 +39,48 @@ from vllm import LLM, SamplingParams
 
 
 # =========================
-# 配置区（按需修改）
+# 模式与配置区
 # =========================
+MODE = "rl"   # "sft" 或 "rl"，切换测试目标
 
-MODEL_PATH = "ckpt/MechVQA_SFT"
-
-# 输入（项目内置的扁平测试数据，自包含）/ 输出
 INPUT_JSONL = "data/test_samples.jsonl"
-OUTPUT_JSONL = "outputs/sft_infer_test.jsonl"
+
+if MODE == "sft":
+    MODEL_PATH = "ckpt/MechVQA_SFT"
+    OUTPUT_JSONL = "outputs/sft_infer_test.jsonl"
+    PROMPT_TEMPLATE = None          # 不套模板，直接 system + 图片 + question
+    SYSTEM_PROMPT = "你是一名机械制图专家。请仔细阅读图纸并回答问题。"
+    ANSWER_TAG = None               # 整段输出即答案
+    MAX_MODEL_LEN = 8192
+    MAX_NEW_TOKENS = 1024
+    TEMPERATURE = 0.1
+    TOP_P = 0.9
+    TOP_K = 20
+elif MODE == "rl":
+    MODEL_PATH = "ckpt/MechVQA_RL"
+    OUTPUT_JSONL = "outputs/rl_infer_test.jsonl"
+    PROMPT_TEMPLATE = "prompts/mech_r1.jinja"   # 复现 RL 训练 format_prompt
+    SYSTEM_PROMPT = None            # RL 用 format_prompt 包装，无独立 system
+    ANSWER_TAG = "answer"           # 提取 <answer>...</answer>
+    MAX_MODEL_LEN = 16384           # thinking 输出较长
+    MAX_NEW_TOKENS = 4096
+    TEMPERATURE = 0.6               # thinking 模型常用稍高温度
+    TOP_P = 0.95
+    TOP_K = 20
+else:
+    raise ValueError(f"未知 MODE={MODE}，应为 'sft' 或 'rl'")
 
 # vLLM 引擎参数（4B 单卡 A800-80GB 绰绰有余）
 TENSOR_PARALLEL_SIZE = 1
 GPU_MEMORY_UTILIZATION = 0.85
-MAX_MODEL_LEN = 8192
 MAX_NUM_SEQS = 64
 
-# 推理采样参数（低温度，便于核对；改动后想随机可调高 temperature）
-TEMPERATURE = 0.1
-TOP_P = 0.9
-TOP_K = 20
-MAX_NEW_TOKENS = 1024
-
-# 一次喂入 llm.chat 的样本数（内置数据默认 10 条，全部推理）
+# 一次喂入 llm.chat 的样本数
 BATCH_SIZE = 10
 
-# 图片超过该像素数则等比缩放（宽×高）
+# 图片超过该像素数则等比缩放
 MAX_IMAGE_TOTAL_PIXELS = 4_000_000
 Image.MAX_IMAGE_PIXELS = None  # 关闭 PIL DecompressionBombWarning
-
-SYSTEM_PROMPT = "你是一名机械制图专家。请仔细阅读图纸并回答问题。"
 
 
 # =========================
@@ -126,12 +134,39 @@ class TimeTracker:
 # =========================
 # 工具函数
 # =========================
+_TEMPLATE_CACHE = None
+
+
+def render_prompt(question: str) -> str:
+    """sft: 原样返回 question；rl: 用 jinja 模板渲染（复现 EasyR1 format_prompt）。
+
+    EasyR1 (verl/utils/dataset.py): Template(open(path).read().strip()).render(content=q)
+    模板里的字面 \\n 不会被 Jinja2 转义，原样保留（与训练一致）。
+    """
+    global _TEMPLATE_CACHE
+    if not PROMPT_TEMPLATE:
+        return question
+    if _TEMPLATE_CACHE is None:
+        from jinja2 import Template
+        text = Path(PROMPT_TEMPLATE).read_text(encoding="utf-8").strip()
+        _TEMPLATE_CACHE = Template(text)
+    return _TEMPLATE_CACHE.render(content=question)
+
+
+def extract_answer(text: str) -> str:
+    """sft: 返回整段文本；rl: 从 <answer>...</answer> 提取（失败返回空）。"""
+    if not ANSWER_TAG:
+        return text.strip()
+    m = re.search(rf"<{ANSWER_TAG}>(.*?)</{ANSWER_TAG}>", text, re.DOTALL)
+    return m.group(1).strip() if m else ""
+
+
+def is_valid_pred(pred: str) -> bool:
+    return isinstance(pred, str) and bool(pred.strip())
+
+
 def load_samples(path: Path):
-    """
-    读取项目内置的扁平测试数据，每行一个样本 dict。
-    字段：id / image_path(相对项目根) / question / gt_answer / capability / subcategory / difficulty
-    返回 list[dict]。
-    """
+    """读取项目内置的扁平测试数据，每行一个样本 dict。"""
     samples = []
     with path.open("r", encoding="utf-8") as f:
         for line in f:
@@ -155,16 +190,8 @@ def load_samples(path: Path):
     return samples
 
 
-def is_valid_response(response: str) -> bool:
-    """直接问答：非空文本即视为成功。"""
-    return isinstance(response, str) and bool(response.strip())
-
-
 def build_conversations_safe(samples):
-    """
-    安全构造 conversations：坏图/缺字段只跳过不抛异常。
-    返回 (conversations, good_samples, bad_samples)
-    """
+    """安全构造 conversations：坏图/缺字段只跳过。返回 (convs, good, bad)。"""
     conversations, good, bad = [], [], []
     for s in samples:
         if not s.get("question") or not s.get("image_path"):
@@ -183,13 +210,14 @@ def build_conversations_safe(samples):
             print(f"[ERROR] 打开图片失败 id={s.get('id')} path={s.get('image_path')}: {repr(e)}")
             bad.append(s)
             continue
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": [
-                {"type": "image_pil", "image_pil": img},
-                {"type": "text", "text": s["question"]},
-            ]},
-        ]
+        user_text = render_prompt(s["question"])
+        messages = []
+        if SYSTEM_PROMPT:
+            messages.append({"role": "system", "content": SYSTEM_PROMPT})
+        messages.append({"role": "user", "content": [
+            {"type": "image_pil", "image_pil": img},
+            {"type": "text", "text": user_text},
+        ]})
         conversations.append(messages)
         good.append(s)
     return conversations, good, bad
@@ -206,6 +234,8 @@ def main():
     input_path = Path(INPUT_JSONL)
     output_path = Path(OUTPUT_JSONL)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    print(f"[INFO] MODE={MODE} | MODEL={MODEL_PATH} | PROMPT_TEMPLATE={PROMPT_TEMPLATE} | ANSWER_TAG={ANSWER_TAG}")
 
     # 1. 加载内置测试数据
     samples = load_samples(input_path)
@@ -227,7 +257,7 @@ def main():
                     obj = json.loads(line)
                 except Exception:
                     continue
-                if not is_valid_response(obj.get("pred_answer", "")):
+                if not is_valid_pred(obj.get("pred_answer", "")):
                     continue
                 existing_success[make_sample_key(obj)] = obj
         print(f"[INFO] 已有成功结果 {len(existing_success)} 条")
@@ -314,36 +344,41 @@ def main():
                 except Exception as e2:
                     print(f"[ERROR] 解析输出失败 id={s.get('id')}: {repr(e2)}")
                     continue
-                if not is_valid_response(text):
-                    trunc_in += 1
-                    continue
+                pred = extract_answer(text)
+                ok = is_valid_pred(pred)
                 out_obj = {
                     "id": s["id"],
                     "image_path": s["image_path"],
                     "question": s["question"],
                     "gt_answer": s["gt_answer"],
-                    "pred_answer": text,
+                    "pred_answer": pred,
+                    "extract_ok": ok,
                     "capability": s["capability"],
                     "subcategory": s["subcategory"],
                     "difficulty": s["difficulty"],
                     "finish_reason": finish,
                 }
+                if ANSWER_TAG:
+                    out_obj["raw_response"] = text  # 保留完整 <think>/<answer>，便于排查
                 f.write(json.dumps(out_obj, ensure_ascii=False) + "\n")
-                success_in += 1
+                if ok:
+                    success_in += 1
+                else:
+                    trunc_in += 1
 
         total_success += success_in
         total_truncated += trunc_in
         tracker.update(len(batch_samples), success_in)
-        print(f"[BATCH {batch_idx + 1}/{num_batches}] 成功 {success_in} | 空输出 {trunc_in} | 坏图 {len(bad)}")
+        print(f"[BATCH {batch_idx + 1}/{num_batches}] 成功 {success_in} | 提取失败 {trunc_in} | 坏图 {len(bad)}")
         print(f"[TIME] {tracker.status()}")
 
     # 6. 汇总
-    print(f"\n{'=' * 60}\n[SUMMARY] 推理完成\n{'=' * 60}")
+    print(f"\n{'=' * 60}\n[SUMMARY] 推理完成 (MODE={MODE})\n{'=' * 60}")
     print(f"  总样本:      {total}")
     print(f"  已有成功:    {len(existing_success)}")
     print(f"  本次推理:    {len(pending)}")
     print(f"  新增成功:    {total_success}")
-    print(f"  空/无效:     {total_truncated}")
+    print(f"  提取失败:    {total_truncated}")
     print(f"  当前总计:    {len(existing_success) + total_success}")
     print(f"  总耗时:      {TimeTracker.format_time(tracker.get_elapsed())}")
     print(f"{'=' * 60}")

@@ -1,7 +1,7 @@
 # MechVQA SFT 模型推理验证 —— 设计文档
 
 - **日期**：2026-06-25
-- **状态**：待审阅
+- **状态**：已实现并验证（SFT 10/10、RL 10/10 全部成功，答案正确）
 - **参考脚本**：`/share/project/shixiaofeng/code/EasyR1/data_mechvlm/qwen_vl_vllm_batch_infer.py`
 - **测试数据**：`/share/project/shixiaofeng/code/MechVLM/vqa_data/mechnical_data_vote_based.jsonl`
 
@@ -179,6 +179,22 @@ MechVQA/
 
 ## 9. 范围外（YAGNI）
 
-- RL 模型测试（缺 shard 1，待补齐）
 - 全量 8720 条推理与自动评测指标（本轮仅 10 条验证）
 - 多卡 TP=2（4B 无需）
+
+## 10. RL 扩展（后续追加，已实现）
+
+RL 模型补齐缺失 shard 后纳入同一脚本，顶部 `MODE="rl"` 切换：
+
+- **Prompt**：`prompts/mech_r1.jinja`（从 EasyR1 整理），用 `Template(text.strip()).render(content=question)` 渲染，字面 `\n` 原样保留，复现训练 format_prompt；无独立 system。
+- **输出**：thinking 模型生成 `<think>...</think><answer>...</answer>`，正则提取 `<answer>` 为 `pred_answer`，完整输出存 `raw_response`。
+- **参数**：MAX_MODEL_LEN=16384、MAX_NEW_TOKENS=4096、TEMPERATURE=0.6（thinking 常用稍高温度）。
+- **健壮性**：失败样本（未输出 `<answer>`，如 temperature 随机走偏）也写入 jsonl（`extract_ok:false` + `raw_response`），便于排查。
+- **结果**：10/10 成功，数值答案全部正确；answer 文本带冗余「符合要求」元评论，系 RL reward 训练所致。
+
+## 11. 验证结果汇总
+
+| 模型 | 成功 | 答案 | 备注 |
+|---|---|---|---|
+| SFT | 10/10 | 抽样全正确 | 直接问答，输出简洁 |
+| RL | 10/10 | 数值全正确 | thinking，answer 含冗余元评论 |
