@@ -144,29 +144,28 @@ MechVQA evaluates MLLMs across **10 fine-grained tasks** grouped into three capa
 If you find **MechVQA** or **MechVL** useful in your research, please ⭐ star this repository and cite our paper:
 
 ```bibtex
-@inproceedings{kou2026mechvqa,
-  title     = {MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding},
-  author    = {Kou, Qian and Shi, Xiaofeng and Li, Yulin and Qiu, Xiaosong and Wang, Xinyang and Zhou, Hua and Cao, Dongxing},
-  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  series    = {Proceedings of Machine Learning Research},
-  volume    = {306},
-  year      = {2026},
-  publisher = {PMLR},
-  address   = {Seoul, South Korea}
+@misc{kou2026mechvqabenchmarkingenhancingmultimodal,
+      title={MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding},
+      author={Qian Kou and Xiaofeng Shi and Yulin Li and Xiaosong Qiu and Xinyang Wang and Hua Zhou and Cao Dongxing},
+      year={2026},
+      eprint={2605.30794},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2605.30794}
 }
 ```
 
 <details>
 <summary>Plain-text citation</summary>
 
-Qian Kou, Xiaofeng Shi, Yulin Li, Xiaosong Qiu, Xinyang Wang, Hua Zhou, and Cao Dongxing. 2026. *MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding.* In Proceedings of the 43rd International Conference on Machine Learning (ICML), volume 306 of Proceedings of Machine Learning Research, Seoul, South Korea. PMLR.
+Qian Kou, Xiaofeng Shi, Yulin Li, Xiaosong Qiu, Xinyang Wang, Hua Zhou, and Cao Dongxing. 2026. *MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding.* arXiv:2605.30794. (Accepted to ICML 2026.)
 
 </details>
 
 <details>
 <summary>APA 7th</summary>
 
-Kou, Q., Shi, X., Li, Y., Qiu, X., Wang, X., Zhou, H., & Cao, D. (2026). MechVQA: Benchmarking and enhancing multimodal LLMs on comprehensive mechanical drawing understanding. In *Proceedings of the 43rd International Conference on Machine Learning (ICML)*. PMLR.
+Kou, Q., Shi, X., Li, Y., Qiu, X., Wang, X., Zhou, H., & Cao, D. (2026). *MechVQA: Benchmarking and enhancing multimodal LLMs on comprehensive mechanical drawing understanding.* arXiv. https://arxiv.org/abs/2605.30794
 
 </details>
 
