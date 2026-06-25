@@ -10,6 +10,9 @@ ckpt/
 outputs/
 *.output.jsonl
 
+# ===== Triton/vLLM kernel 编译缓存 =====
+.triton_cache/
+
 # ===== Python =====
 __pycache__/
 *.py[cod]
