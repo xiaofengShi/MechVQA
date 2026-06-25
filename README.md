@@ -141,16 +141,34 @@ MechVQA evaluates MLLMs across **10 fine-grained tasks** grouped into three capa
 
 ## 📝 Citation
 
-If you find this work useful, please cite:
+If you find **MechVQA** or **MechVL** useful in your research, please ⭐ star this repository and cite our paper:
 
 ```bibtex
 @inproceedings{kou2026mechvqa,
   title     = {MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding},
   author    = {Kou, Qian and Shi, Xiaofeng and Li, Yulin and Qiu, Xiaosong and Wang, Xinyang and Zhou, Hua and Cao, Dongxing},
   booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year      = {2026}
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {306},
+  year      = {2026},
+  publisher = {PMLR},
+  address   = {Seoul, South Korea}
 }
 ```
+
+<details>
+<summary>Plain-text citation</summary>
+
+Qian Kou, Xiaofeng Shi, Yulin Li, Xiaosong Qiu, Xinyang Wang, Hua Zhou, and Cao Dongxing. 2026. *MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding.* In Proceedings of the 43rd International Conference on Machine Learning (ICML), volume 306 of Proceedings of Machine Learning Research, Seoul, South Korea. PMLR.
+
+</details>
+
+<details>
+<summary>APA 7th</summary>
+
+Kou, Q., Shi, X., Li, Y., Qiu, X., Wang, X., Zhou, H., & Cao, D. (2026). MechVQA: Benchmarking and enhancing multimodal LLMs on comprehensive mechanical drawing understanding. In *Proceedings of the 43rd International Conference on Machine Learning (ICML)*. PMLR.
+
+</details>
 
 ## 📄 License
 
@@ -162,7 +180,7 @@ MechVQA/MechVL are built on top of [Qwen3-VL](https://github.com/QwenLM/Qwen2.5-
 
 ## ✉️ Contact
 
-- **Qian Kou** — <kouqian@baai.ac.cn>
 - **Xiaofeng Shi** — <xfshi@baai.ac.cn>
+- **Qian Kou** — <kouqian@baai.ac.cn>
 
 Beijing Academy of Artificial Intelligence (BAAI) · Institute of Information Engineering, CAS · Beijing University of Technology.
