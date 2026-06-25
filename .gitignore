@@ -13,6 +13,12 @@ outputs/
 # ===== Triton/vLLM kernel 编译缓存 =====
 .triton_cache/
 
+# ===== EasyR1 训练产物（日志/checkpoint/输出）=====
+wandb/
+EasyR1/wandb/
+EasyR1/outputs/
+EasyR1/checkpoints/
+
 # ===== Python =====
 __pycache__/
 *.py[cod]
