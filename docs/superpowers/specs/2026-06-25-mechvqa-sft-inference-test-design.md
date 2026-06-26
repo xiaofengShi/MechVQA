@@ -2,8 +2,8 @@
 
 - **日期**：2026-06-25
 - **状态**：已实现并验证（SFT 10/10、RL 10/10 全部成功，答案正确）
-- **参考脚本**：`/share/project/shixiaofeng/code/EasyR1/data_mechvlm/qwen_vl_vllm_batch_infer.py`
-- **测试数据**：`/share/project/shixiaofeng/code/MechVLM/vqa_data/mechnical_data_vote_based.jsonl`
+- **参考脚本**：`EasyR1/data_mechvlm/qwen_vl_vllm_batch_infer.py`
+- **测试数据**：`<MechVLM-dataset>/vqa_data/mechnical_data_vote_based.jsonl`
 
 ## 1. 目标
 
@@ -20,7 +20,7 @@
 | transformers | 4.57.1 | 与模型 `config.json` 要求一致 |
 | torch | 2.8.0+cu128 | CUDA 可用，2 GPU 可见 |
 | ⚠️ PYTHONPATH 坑 | 启动需 `env -u PYTHONPATH` | 系统 `PYTHONPATH` 指向 python3.10 的 `/usr/local/lib/python3.10/dist-packages`，会污染 import；脚本内会再做 `sys.path` 清理兜底 |
-| 模型 | `/share/project/shixiaofeng/code/MechVQA/ckpt/MechVQA_SFT` | 2 个 safetensors 完整，约 8.9GB |
+| 模型 | `ckpt/MechVQA_SFT` | 2 个 safetensors 完整，约 8.9GB |
 | GPU | 2 × A800-80GB（160GB，当前空闲） | 4B bf16≈8GB → **TP=1 单卡** |
 
 ## 3. 推理流程图
@@ -89,8 +89,8 @@
 ### 4.1 关键参数（脚本顶部配置区，均可改）
 
 ```python
-MODEL_PATH = "/share/project/shixiaofeng/code/MechVQA/ckpt/MechVQA_SFT"
-INPUT_JSONL = "/share/project/shixiaofeng/code/MechVLM/vqa_data/mechnical_data_vote_based.jsonl"
+MODEL_PATH = "ckpt/MechVQA_SFT"
+INPUT_JSONL = "<MechVLM-dataset>/vqa_data/mechnical_data_vote_based.jsonl"
 OUTPUT_JSONL = "outputs/sft_infer_10.jsonl"
 
 TENSOR_PARALLEL_SIZE = 1
