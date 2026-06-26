@@ -29,7 +29,7 @@ prompts/
 
 | 依赖 | 要求 |
 |---|---|
-| Python 解释器 | `/share/project/kouqian/miniconda3/envs/anyrag/bin/python`（3.12） |
+| Python 解释器 | `python`（3.12） |
 | vLLM | 0.11.0（原生支持 `qwen3_vl`） |
 | transformers | 4.57.1（与模型 `config.json` 一致） |
 | GPU | 单张 A800-80GB（4B bf16 约 8.8GB，TP=1） |
@@ -46,7 +46,7 @@ prompts/
 
 ```bash
 env -u PYTHONPATH CUDA_VISIBLE_DEVICES=0 \
-  /share/project/kouqian/miniconda3/envs/anyrag/bin/python \
+  python \
   scripts/batch_infer.py
 ```
 

@@ -15,7 +15,7 @@
 
 | 项 | 值 | 备注 |
 |---|---|---|
-| 解释器 | `/share/project/kouqian/miniconda3/envs/anyrag/bin/python` | python 3.12.11 |
+| 解释器 | `python` | python 3.12.11 |
 | vLLM | 0.11.0 | 已注册 `Qwen3VLForConditionalGeneration` |
 | transformers | 4.57.1 | 与模型 `config.json` 要求一致 |
 | torch | 2.8.0+cu128 | CUDA 可用，2 GPU 可见 |
@@ -145,7 +145,7 @@ sys.path = [p for p in sys.path
 # 推荐：用 anyrag 解释器，清空污染 PYTHONPATH
 env -u PYTHONPATH \
   CUDA_VISIBLE_DEVICES=0 \
-  /share/project/kouqian/miniconda3/envs/anyrag/bin/python \
+  python \
   scripts/batch_infer.py
 ```
 

@@ -16,7 +16,7 @@ MechVQA 批量推理验证脚本（支持 SFT / RL 双模式）
 
 运行（在项目根目录执行）：
     env -u PYTHONPATH CUDA_VISIBLE_DEVICES=0 \\
-      /share/project/kouqian/miniconda3/envs/anyrag/bin/python scripts/batch_infer.py
+      python scripts/batch_infer.py
 """
 
 # ---- 清理被污染的 PYTHONPATH（系统指向 python3.10 的旧包会干扰 import）----
