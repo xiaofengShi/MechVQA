@@ -97,7 +97,14 @@ ckpt/
 └── MechVQA_RL/     # MechVL-4B-RL   (DAPO two-stage self-play on top of SFT)
 ```
 
-> 🚧 Official download links (HuggingFace / ModelScope) will be added here once released.
+**Download:**
+
+| Model | HuggingFace | ModelScope (recommended, full weights) |
+|---|---|---|
+| MechVL-4B-SFT | [MonteXiaofeng/MechVL-4B-SFT](https://huggingface.co/MonteXiaofeng/MechVL-4B-SFT) | [xiaofengalg/MechVL-4B-SFT](https://modelscope.cn/models/xiaofengalg/MechVL-4B-SFT) |
+| MechVL-4B-RL | [MonteXiaofeng/MechVL-4B-RL](https://huggingface.co/MonteXiaofeng/MechVL-4B-RL) | [xiaofengalg/MechVL-4B-RL](https://modelscope.cn/models/xiaofengalg/MechVL-4B-RL) |
+
+> ModelScope repos contain the full checkpoints (all weights). HuggingFace repos currently hold configs + model card; the large weight files are being mirrored (HF mirror upload is bandwidth-limited) — use ModelScope for immediate access to the weights.
 
 ## 🚀 Quick Start: Inference
 
