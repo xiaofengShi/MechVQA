@@ -4,8 +4,6 @@
 [![Conference](https://img.shields.io/badge/ICML-2026-4B8BB2.svg)](https://icml.cc/)
 [![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/MonteXiaofeng/mechvqa)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Collection-6b31e3.svg)](https://modelscope.cn/collections/xiaofengalg/MechVQA)
-[![License](https://img.shields.io/badge/License-Apache--2.0-green.svg)](./LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)]()
 
 
 > **Official code repository** for the ICML 2026 paper *"MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"*.
