@@ -68,7 +68,6 @@ MechVQA/
 │   ├── examples/        # mech_qwen3_vl_4b_*.sh training scripts + reward_function/ + format_prompt/
 │   ├── scripts/         # Utilities (ray cluster, judge server, dataset download, model merge)
 │   └── tests/ docs/
-├── docs/                # Design specs
 └── paper/               # Paper PDF
 ```
 
@@ -100,7 +99,9 @@ ckpt/
 └── MechVQA_RL/     # MechVL-4B-RL   (DAPO two-stage self-play on top of SFT)
 ```
 
-> 🤗 **HuggingFace** (checkpoints + paper): [MechVQA Collection](https://huggingface.co/collections/MonteXiaofeng/mechvqa) ｜ 🟣 **ModelScope** (full weights): [MechVQA Collection](https://modelscope.cn/collections/xiaofengalg/MechVQA)
+> 🤗 **HuggingFace** (checkpoints + paper): [MechVQA Collection](https://huggingface.co/collections/MonteXiaofeng/mechvqa)
+
+> 🟣 **ModelScope** (full weights): [MechVQA Collection](https://modelscope.cn/collections/xiaofengalg/MechVQA)
 
 **Download:**
 

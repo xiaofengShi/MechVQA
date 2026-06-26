@@ -32,3 +32,6 @@ venv/
 .idea/
 .claude/
 .DS_Store
+
+# ===== 内部开发文档（superpowers specs，不上传）=====
+docs/superpowers/
