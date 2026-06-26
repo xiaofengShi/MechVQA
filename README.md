@@ -45,7 +45,7 @@ Mechanical engineering drawings encode semantics through a compact, standardized
 | Self-contained example samples (10 QA + drawings) | ✅ Ready |
 | RL training framework (`EasyR1/`, sanitized) | ✅ Ready |
 | RL format prompt & reward functions | ✅ Ready |
-| MechVL-4B-SFT / -RL checkpoints | 🚧 Releasing soon (HF / ModelScope) |
+| MechVL-4B-SFT / -RL checkpoints | ✅ Released (ModelScope full weights; HF mirroring in progress) |
 | Full MechVQA benchmark data (21K QA) | 🚧 Releasing soon |
 | Complete SFT training recipe | 🚧 Releasing soon |
 | Evaluation script & metrics | 🚧 Releasing soon |
