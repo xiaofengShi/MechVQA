@@ -2,8 +2,10 @@
 
 [![Paper](https://img.shields.io/badge/arXiv-2605.30794-b31b1b.svg)](https://arxiv.org/abs/2605.30794)
 [![Conference](https://img.shields.io/badge/ICML-2026-4B8BB2.svg)](https://icml.cc/)
+[![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/MonteXiaofeng/mechvqa)
 [![License](https://img.shields.io/badge/License-Apache--2.0-green.svg)](./LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)]()
+
 
 > **Official code repository** for the ICML 2026 paper *"MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"*.
 
@@ -96,6 +98,8 @@ ckpt/
 ├── MechVQA_SFT/    # MechVL-4B-SFT  (Qwen3-VL-4B-Instruct, full-param SFT)
 └── MechVQA_RL/     # MechVL-4B-RL   (DAPO two-stage self-play on top of SFT)
 ```
+
+> 🤗 All HuggingFace artifacts — **model checkpoints** and the **paper** — are gathered in the [MechVQA Collection](https://huggingface.co/collections/MonteXiaofeng/mechvqa).
 
 **Download:**
 
