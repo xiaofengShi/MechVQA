@@ -1,0 +1,29 @@
+{
+  "input_file": "../benchmark_data/vqa_benchmark/mechvqa_benchmark.jsonl",
+  "image_root": "../benchmark_data",
+  "phase1_output": "outputs/responses_example-model.jsonl",
+  "evaluated_output": "outputs/evaluated_example-model.jsonl",
+  "stats_output": "outputs/stats_example-model.json",
+  "max_workers": 8,
+  "append_answer_suffix": true,
+  "target_models": [
+    {
+      "name": "example-model",
+      "model": "example-model",
+      "base_url": "http://localhost:8000/v1",
+      "api_key_env": "VQA_TARGET_API_KEY",
+      "temperature": 0.1,
+      "max_tokens": 4096
+    }
+  ],
+  "judge_models": [
+    {
+      "name": "judge-model",
+      "model": "gpt-4o-mini",
+      "base_url": "https://api.openai.com/v1",
+      "api_key_env": "OPENAI_API_KEY",
+      "temperature": 0.0,
+      "max_tokens": 1024
+    }
+  ]
+}

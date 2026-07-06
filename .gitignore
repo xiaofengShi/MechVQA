@@ -10,6 +10,10 @@ ckpt/
 outputs/
 *.output.jsonl
 
+# ===== 评估输出 =====
+evaluation/outputs/
+evaluation/logs/
+
 # ===== Triton/vLLM kernel 编译缓存 =====
 .triton_cache/
 
@@ -18,6 +22,10 @@ wandb/
 EasyR1/wandb/
 EasyR1/outputs/
 EasyR1/checkpoints/
+training/LLaMA-Factory/saves/
+training/LLaMA-Factory/cache/
+training/LLaMA-Factory/output*/
+training/LLaMA-Factory/wandb/
 
 # ===== Python =====
 __pycache__/
@@ -25,6 +33,13 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+.pytest_cache/
+pytest.ini
+data_generation/tests/
+evaluation/tests/
+training/tests/
+training/LLaMA-Factory/tests/
+training/LLaMA-Factory/tests_v1/
 
 # ===== OMC / 编辑器 / 系统 =====
 .omc/
