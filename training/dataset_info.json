@@ -1,0 +1,16 @@
+{
+  "mechvqa_sft_examples_zh_en_20": {
+    "file_name": "mechvqa_sft_examples/mechvqa_sft_examples_zh_en_20.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  }
+}

@@ -8,7 +8,7 @@
 
 > **Official code repository** for the ICML 2026 paper *"MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"*.
 
-> 🚧 **Status:** This repository is under **active development**. Inference code and the RL training framework are ready now. We are progressively open-sourcing the model checkpoints, the full **MechVQA** benchmark, the complete SFT recipe, and the evaluation pipeline. Please watch/star the repo for updates.
+> 🚧 **Status:** This repository is under **active development**. Inference code, the RL training framework, the public evaluation benchmark, the evaluation pipeline, the VQA-free data-generation pipeline, and a compact SFT recipe are available now. Model checkpoints are released through ModelScope/HuggingFace links; the full internal SFT corpus is not included in this repository.
 
 ---
 
@@ -46,9 +46,11 @@ Mechanical engineering drawings encode semantics through a compact, standardized
 | RL training framework (`EasyR1/`, sanitized) | ✅ Ready |
 | RL format prompt & reward functions | ✅ Ready |
 | MechVL-4B-SFT / -RL checkpoints | ✅ Released (ModelScope full weights; HF mirroring in progress) |
-| Full MechVQA benchmark data (21K QA) | 🚧 Releasing soon |
-| Complete SFT training recipe | 🚧 Releasing soon |
-| Evaluation script & metrics | 🚧 Releasing soon |
+| Public MechVQA evaluation benchmark (1,185 QA + drawings) | ✅ Ready |
+| Evaluation script & metrics | ✅ Ready |
+| VQA-free data-generation pipeline | ✅ Ready |
+| SFT recipe (LLaMA Factory 4B config + 20 examples) | ✅ Ready |
+| Full internal SFT training corpus | Not included |
 
 ## 🗂️ Repository Structure
 
@@ -59,6 +61,10 @@ MechVQA/
 │   ├── batch_infer.py   # Inference entry: SFT/RL dual-mode (toggle MODE at top)
 │   └── README.md        # Inference usage (environment, params, outputs)
 ├── data/                # Built-in example samples (10 QA + 10 drawings)
+├── benchmark_data/      # Public evaluation benchmark JSONL + packaged drawings
+├── evaluation/          # OpenAI-compatible VQA evaluation pipeline
+├── data_generation/     # Extract + VQA-free generation + QC + split scripts
+├── training/            # LLaMA Factory SFT recipe, 4B config, public examples
 ├── prompts/
 │   └── mech_r1.jinja    # RL format prompt (<think>/<answer> schema)
 ├── EasyR1/              # RL training framework (verl-based; GRPO/GSPO/DAPO/CISPO)
@@ -86,6 +92,12 @@ pip install "vllm>=0.11" "transformers>=4.57.1" pillow jinja2 tqdm
 ```
 
 **Training** (EasyR1 / RL): see [`EasyR1/requirements.txt`](./EasyR1/requirements.txt) or use the provided [`EasyR1/Dockerfile`](./EasyR1/Dockerfile).
+
+**Evaluation**: see [`evaluation/requirements.txt`](./evaluation/requirements.txt).
+
+**Data generation**: see [`data_generation/requirements.txt`](./data_generation/requirements.txt).
+
+**SFT recipe**: see [`training/README.md`](./training/README.md).
 
 ## 🧠 Model Checkpoints
 
@@ -130,6 +142,40 @@ CUDA_VISIBLE_DEVICES=0 python scripts/batch_infer.py
 - Supports **resumable** runs (skips already-succeeded samples), bad-image tolerance, incremental JSONL writing.
 - See [`scripts/README.md`](./scripts/README.md) for all configuration knobs.
 
+## 📦 Public Benchmark Data
+
+The public evaluation benchmark is packaged under [`benchmark_data/`](./benchmark_data/):
+
+```text
+benchmark_data/
+├── images/
+└── vqa_benchmark/
+    └── mechvqa_benchmark.jsonl
+```
+
+- `mechvqa_benchmark.jsonl` contains 1,185 QA records and 562 packaged drawing images.
+- Image paths in each JSONL record are relative to `benchmark_data/`.
+- Each record follows the public message schema:
+
+```json
+{
+  "messages": [
+    {"role": "user", "content": "question text"},
+    {"role": "assistant", "content": "reference answer"}
+  ],
+  "images": ["images/example.png"],
+  "metadata": {
+    "capability": "Reasoning",
+    "subcategory": "Assembly Relationship",
+    "difficulty": "Hard",
+    "language": "中文"
+  },
+  "qualityscore": 1.0
+}
+```
+
+Taxonomy labels in `capability`, `subcategory`, and `difficulty` use the English labels reported in the paper.
+
 ## 🏋️ Training (MechVL)
 
 MechVL is trained in a **multi-stage paradigm**:
@@ -142,13 +188,50 @@ MechVL is trained in a **multi-stage paradigm**:
 
 The RL pipeline is built on the included `EasyR1/` (a verl-based framework). Example training scripts: `EasyR1/examples/mech_qwen3_vl_4b_*.sh` (covering GRPO / GSPO / DAPO / CISPO and the round-2 reward variants). Reward functions live in `EasyR1/examples/reward_function/mech*.py`.
 
-> 🚧 The complete, reproducible SFT recipe and turn-key training configs are being prepared.
+The public SFT recipe is included under [`training/`](./training/). It contains a vendored LLaMA Factory snapshot, one Qwen3-VL 4B full-parameter SFT config, and a compact 20-record example dataset for format verification:
+
+```bash
+cd training/LLaMA-Factory
+pip install -e ".[torch,metrics]"
+cd ../..
+
+export MODEL_NAME_OR_PATH=/path/or/hf-id/to/qwen3-vl-4b-instruct
+export DATASET_DIR=$PWD/training/LLaMA-Factory/data
+export MEDIA_DIR=$PWD/training/LLaMA-Factory/data
+export OUTPUT_DIR=/path/to/outputs/mechvqa_qwen3_vl_4b_full
+
+bash training/run_sft.sh training/qwen3_vl_sft_4b_full_finetune.yaml
+```
+
+See [`training/README.md`](./training/README.md) for the dataset registry and dry-run command. The full internal SFT corpus is not bundled in this repository.
 
 ## 📊 Evaluation
 
 MechVQA evaluates MLLMs across **10 fine-grained tasks** grouped into three capability levels (Recognition / Reasoning / Judging), reported as per-level means and an overall **Total** score. See [§3 and §6 of the paper](https://arxiv.org/abs/2605.30794) for the task taxonomy, metrics, and full results.
 
-> 🚧 The standalone evaluation script and the full benchmark download will be released soon. Meanwhile, `scripts/batch_infer.py` can produce model predictions over any MechVQA-format JSONL for manual inspection.
+The open-source evaluator is included under [`evaluation/`](./evaluation/). It runs target-model inference, judges responses with an OpenAI-compatible judge model, and reports aggregate and metadata-level metrics.
+
+```bash
+cd evaluation
+pip install -r requirements.txt
+cp configs/vqa_eval.example.json configs/vqa_eval.local.json
+# Edit input_file, image_root, model names, API keys, and base URLs.
+MAX_SAMPLES=5 bash scripts/run_all.sh configs/vqa_eval.local.json
+```
+
+See [`evaluation/README.md`](./evaluation/README.md) for the full two-phase workflow.
+
+## 🏭 Data Generation
+
+The public data-generation pipeline is included under [`data_generation/`](./data_generation/). It covers the open-source portion of the paper pipeline: drawing metadata extraction, VQA-free question generation from extracted metadata, model-based question checking, multi-answer generation with semantic voting, message-format conversion, difficulty assignment, and dataset splitting.
+
+```bash
+pip install -r data_generation/requirements.txt
+python data_generation/extract_pipeline.py --help
+python data_generation/generate_vqa_free_query.py --help
+```
+
+Internal/manual routes such as expert source curation, human metadata correction, template GT construction, 2D/3D candidate pairing, and CAD expert edits are intentionally not included.
 
 ## 📝 Citation
 
