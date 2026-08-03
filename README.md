@@ -2,7 +2,7 @@
 
 [![Paper](https://img.shields.io/badge/arXiv-2605.30794-b31b1b.svg)](https://arxiv.org/abs/2605.30794)
 [![Conference](https://img.shields.io/badge/ICML-2026-4B8BB2.svg)](https://icml.cc/)
-[![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/MonteXiaofeng/mechvqa)
+[![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/XiaofengAlg/mechvqa)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Collection-6b31e3.svg)](https://modelscope.cn/collections/xiaofengalg/MechVQA)
 
 
@@ -109,7 +109,7 @@ ckpt/
 └── MechVQA_RL/     # MechVL-4B-RL   (DAPO two-stage self-play on top of SFT)
 ```
 
-> 🤗 **HuggingFace** (checkpoints + paper): [MechVQA Collection](https://huggingface.co/collections/MonteXiaofeng/mechvqa)
+> 🤗 **HuggingFace** (checkpoints + paper): [MechVQA Collection](https://huggingface.co/collections/XiaofengAlg/mechvqa)
 
 > 🟣 **ModelScope** (full weights): [MechVQA Collection](https://modelscope.cn/collections/xiaofengalg/MechVQA)
 
@@ -117,8 +117,8 @@ ckpt/
 
 | Model | HuggingFace | ModelScope (recommended, full weights) |
 |---|---|---|
-| MechVL-4B-SFT | [MonteXiaofeng/MechVL-4B-SFT](https://huggingface.co/MonteXiaofeng/MechVL-4B-SFT) | [xiaofengalg/MechVL-4B-SFT](https://modelscope.cn/models/xiaofengalg/MechVL-4B-SFT) |
-| MechVL-4B-RL | [MonteXiaofeng/MechVL-4B-RL](https://huggingface.co/MonteXiaofeng/MechVL-4B-RL) | [xiaofengalg/MechVL-4B-RL](https://modelscope.cn/models/xiaofengalg/MechVL-4B-RL) |
+| MechVL-4B-SFT | [XiaofengAlg/MechVL-4B-SFT](https://huggingface.co/XiaofengAlg/MechVL-4B-SFT) | [xiaofengalg/MechVL-4B-SFT](https://modelscope.cn/models/xiaofengalg/MechVL-4B-SFT) |
+| MechVL-4B-RL | [XiaofengAlg/MechVL-4B-RL](https://huggingface.co/XiaofengAlg/MechVL-4B-RL) | [xiaofengalg/MechVL-4B-RL](https://modelscope.cn/models/xiaofengalg/MechVL-4B-RL) |
 
 > ModelScope repos contain the full checkpoints (all weights). HuggingFace repos currently hold configs + model card; the large weight files are being mirrored (HF mirror upload is bandwidth-limited) — use ModelScope for immediate access to the weights.
 
