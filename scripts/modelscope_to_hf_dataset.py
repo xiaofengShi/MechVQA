@@ -13,9 +13,11 @@ import getpass
 import hashlib
 import json
 import os
+import time
 from pathlib import Path
 
 from huggingface_hub import HfApi, hf_hub_download
+from huggingface_hub.utils import HfHubHTTPError
 from modelscope_hub import HubApi as ModelScopeHubApi
 
 
@@ -52,7 +54,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Validate the source package without creating or uploading the HF repo.",
     )
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=8,
+        help="Concurrent ModelScope download workers.",
+    )
     return parser.parse_args()
 
 
@@ -157,6 +164,35 @@ def verify_remote_key_files(
             raise RuntimeError(f"remote key-file mismatch: {relative}")
 
 
+def upload_folder_with_rate_limit(api: HfApi, repo_id: str, source: Path) -> None:
+    for attempt in range(1, 4):
+        try:
+            api.upload_folder(
+                repo_id=repo_id,
+                repo_type="dataset",
+                folder_path=source,
+                ignore_patterns=[".cache/**", ".modelscope/**"],
+                commit_message="Release MechVQA VQA SFT train and validation data",
+                commit_description=(
+                    "Validated public release: 12,749 train records, 766 "
+                    "validation records, and 3,371 content-addressed images."
+                ),
+            )
+            return
+        except HfHubHTTPError as error:
+            if error.response.status_code != 429 or attempt == 3:
+                raise
+            retry_after = error.response.headers.get("Retry-After", "")
+            wait_seconds = int(retry_after) if retry_after.isdigit() else 310
+            wait_seconds = max(wait_seconds, 10)
+            print(
+                f"Hugging Face rate limit reached; retrying in "
+                f"{wait_seconds} seconds (attempt {attempt}/3).",
+                flush=True,
+            )
+            time.sleep(wait_seconds)
+
+
 def main() -> None:
     args = parse_args()
     print(f"Source: ModelScope dataset {args.modelscope_repo}", flush=True)
@@ -190,16 +226,11 @@ def main() -> None:
         repo_type="dataset",
         private=False,
     )
-    api.upload_large_folder(
-        repo_id=args.huggingface_repo,
-        repo_type="dataset",
-        folder_path=source,
-        private=False,
-        ignore_patterns=[".cache/**", ".modelscope/**"],
-        num_workers=args.workers,
-        print_report=True,
-        print_report_every=60,
-    )
+    # upload_large_folder preuploads LFS files one by one and can exceed the
+    # free-account API quota for this image-heavy dataset. upload_folder sends
+    # upload-mode and LFS-batch requests in groups of up to 256 files instead.
+    # Previously uploaded LFS objects are detected remotely and skipped.
+    upload_folder_with_rate_limit(api, args.huggingface_repo, source)
 
     remote_files = set(
         api.list_repo_files(args.huggingface_repo, repo_type="dataset")
