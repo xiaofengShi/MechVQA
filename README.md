@@ -8,7 +8,7 @@
 
 > **Official code repository** for the ICML 2026 paper *"MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"*.
 
-> 🚧 **Status:** This repository is under **active development**. Inference code, the RL training framework, the public evaluation benchmark, the evaluation pipeline, the VQA-free data-generation pipeline, and a compact SFT recipe are available now. Model checkpoints are released through ModelScope/HuggingFace links; the full internal SFT corpus is not included in this repository.
+> 🚧 **Status:** This repository is under **active development**. Inference code, the RL training framework, the public evaluation benchmark, the evaluation pipeline, the VQA-free data-generation pipeline, a compact SFT recipe, and a validated public VQA-only SFT train/validation release are available now. Model checkpoints and training data are released through ModelScope/HuggingFace links; additional internal training data are not included in this repository.
 
 ---
 
@@ -50,7 +50,8 @@ Mechanical engineering drawings encode semantics through a compact, standardized
 | Evaluation script & metrics | ✅ Ready |
 | VQA-free data-generation pipeline | ✅ Ready |
 | SFT recipe (LLaMA Factory 4B config + 20 examples) | ✅ Ready |
-| Full internal SFT training corpus | Not included |
+| Public VQA-only SFT train/val release (13,515 QA + 3,371 images) | ✅ Released ([Hugging Face](https://huggingface.co/datasets/XiaofengAlg/MechVQA) · [ModelScope](https://modelscope.cn/datasets/xiaofengalg/MechVQA)) |
+| Additional internal training data | Not included |
 
 ## 🗂️ Repository Structure
 
@@ -59,6 +60,7 @@ MechVQA/
 ├── ckpt/                # MechVL checkpoints (SFT & RL) — download separately, gitignored
 ├── scripts/
 │   ├── batch_infer.py   # Inference entry: SFT/RL dual-mode (toggle MODE at top)
+│   ├── modelscope_to_hf_dataset.py  # ModelScope-to-HF dataset mirror utility
 │   └── README.md        # Inference usage (environment, params, outputs)
 ├── data/                # Built-in example samples (10 QA + 10 drawings)
 ├── benchmark_data/      # Public evaluation benchmark JSONL + packaged drawings
@@ -176,6 +178,22 @@ benchmark_data/
 
 Taxonomy labels in `capability`, `subcategory`, and `difficulty` use the English labels reported in the paper.
 
+## 📦 Public SFT Training Data
+
+The validated, VQA-only SFT train/validation release is hosted on both
+Hugging Face and ModelScope:
+
+| Platform | Dataset |
+|---|---|
+| Hugging Face | [XiaofengAlg/MechVQA](https://huggingface.co/datasets/XiaofengAlg/MechVQA) |
+| ModelScope | [xiaofengalg/MechVQA](https://modelscope.cn/datasets/xiaofengalg/MechVQA) |
+
+The release contains 12,749 training records, 766 validation records, and
+3,371 content-addressed images. It also includes the SHA-256 checksum manifest,
+release manifest, provenance records, and validation audit. The public package
+is scoped to VQA SFT data; additional internal training artifacts are not part
+of this release.
+
 ## 🏋️ Training (MechVL)
 
 MechVL is trained in a **multi-stage paradigm**:
@@ -203,7 +221,10 @@ export OUTPUT_DIR=/path/to/outputs/mechvqa_qwen3_vl_4b_full
 bash training/run_sft.sh training/qwen3_vl_sft_4b_full_finetune.yaml
 ```
 
-See [`training/README.md`](./training/README.md) for the dataset registry and dry-run command. The full internal SFT corpus is not bundled in this repository.
+See [`training/README.md`](./training/README.md) for the dataset registry and
+dry-run command. For the complete public VQA-only train/validation package,
+download [XiaofengAlg/MechVQA from Hugging Face](https://huggingface.co/datasets/XiaofengAlg/MechVQA)
+or [xiaofengalg/MechVQA from ModelScope](https://modelscope.cn/datasets/xiaofengalg/MechVQA).
 
 ## 📊 Evaluation
 
