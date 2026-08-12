@@ -1,7 +1,7 @@
 # MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding
 
-[![Paper](https://img.shields.io/badge/arXiv-2605.30794-b31b1b.svg)](https://arxiv.org/abs/2605.30794)
 [![Conference](https://img.shields.io/badge/ICML-2026-4B8BB2.svg)](https://icml.cc/virtual/2026/poster/66437)
+[![Paper](https://img.shields.io/badge/arXiv-2605.30794-b31b1b.svg)](https://arxiv.org/abs/2605.30794)
 [![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/XiaofengAlg/mechvqa)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Collection-6b31e3.svg)](https://modelscope.cn/collections/xiaofengalg/MechVQA)
 
