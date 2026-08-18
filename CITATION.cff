@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use MechVQA or MechVL, please cite the accompanying paper."
+title: MechVQA
+type: software
+authors:
+  - family-names: Kou
+    given-names: Qian
+  - family-names: Shi
+    given-names: Xiaofeng
+repository-code: https://github.com/xiaofengShi/MechVQA
+url: https://arxiv.org/abs/2605.30794
+license: Apache-2.0
+preferred-citation:
+  type: article
+  title: "MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"
+  authors:
+    - family-names: Kou
+      given-names: Qian
+    - family-names: Shi
+      given-names: Xiaofeng
+    - family-names: Li
+      given-names: Yulin
+    - family-names: Qiu
+      given-names: Xiaosong
+    - family-names: Wang
+      given-names: Xinyang
+    - family-names: Zhou
+      given-names: Hua
+    - family-names: Cao
+      given-names: Dongxing
+  year: 2026
+  doi: 10.48550/arXiv.2605.30794
+  url: https://arxiv.org/abs/2605.30794
