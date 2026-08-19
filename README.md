@@ -4,9 +4,14 @@
 [![Paper](https://img.shields.io/badge/arXiv-2605.30794-b31b1b.svg)](https://arxiv.org/abs/2605.30794)
 [![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/XiaofengAlg/mechvqa)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Collection-6b31e3.svg)](https://modelscope.cn/collections/xiaofengalg/MechVQA)
+[![Cite](https://img.shields.io/badge/Cite-CITATION.cff-0f766e.svg)](CITATION.cff)
 
 
 > **Official code repository** for the ICML 2026 paper *"MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"*.
+
+> If you use MechVQA, MechVL, or the released training and evaluation assets,
+> please cite the [paper](https://arxiv.org/abs/2605.30794). Machine-readable
+> metadata are available in [CITATION.cff](CITATION.cff).
 
 > 🚧 **Status:** This repository is under **active development**. Inference code, the RL training framework, the public evaluation benchmark, the evaluation pipeline, the VQA-free data-generation pipeline, a compact SFT recipe, and a validated public VQA-only SFT train/validation release are available now. Model checkpoints and training data are released through ModelScope/HuggingFace links; additional internal training data are not included in this repository.
 
