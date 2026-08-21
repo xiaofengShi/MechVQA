@@ -303,3 +303,14 @@ MechVQA/MechVL are built on top of [Qwen3-VL](https://github.com/QwenLM/Qwen2.5-
 - **Qian Kou** — <kouqian@baai.ac.cn>
 
 Beijing Academy of Artificial Intelligence (BAAI) · Institute of Information Engineering, CAS · Beijing University of Technology.
+
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=xiaofengShi%2FMechVQA&type=date&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=xiaofengShi/MechVQA&type=date&theme=dark&legend=bottom-right&sealed_token=KkradenYsJrXA9Uyh_-J283fivVInUhGxPwGE-0CzTChMJhv4E2GtMOg7Z5mWZd9THmN22-l__LTTkaG1vfx3gmiEYEkbdeoAfp9XKEkRTN-OGsh7ePJHg" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=xiaofengShi/MechVQA&type=date&legend=bottom-right&sealed_token=KkradenYsJrXA9Uyh_-J283fivVInUhGxPwGE-0CzTChMJhv4E2GtMOg7Z5mWZd9THmN22-l__LTTkaG1vfx3gmiEYEkbdeoAfp9XKEkRTN-OGsh7ePJHg" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=xiaofengShi/MechVQA&type=date&legend=bottom-right&sealed_token=KkradenYsJrXA9Uyh_-J283fivVInUhGxPwGE-0CzTChMJhv4E2GtMOg7Z5mWZd9THmN22-l__LTTkaG1vfx3gmiEYEkbdeoAfp9XKEkRTN-OGsh7ePJHg" />
+ </picture>
+</a>
