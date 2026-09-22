@@ -1,6 +1,7 @@
 # MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding
 
 [![Conference](https://img.shields.io/badge/ICML-2026-4B8BB2.svg)](https://icml.cc/virtual/2026/poster/66437)
+[![Website](https://img.shields.io/badge/Project-Website-216158.svg)](https://xiaofengshi.github.io/MechVQA/)
 [![Paper](https://img.shields.io/badge/arXiv-2605.30794-b31b1b.svg)](https://arxiv.org/abs/2605.30794)
 [![HuggingFace](https://img.shields.io/badge/🤗%20HF-Models%20%26%20Paper-ffbd21.svg)](https://huggingface.co/collections/XiaofengAlg/mechvqa)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Collection-6b31e3.svg)](https://modelscope.cn/collections/xiaofengalg/MechVQA)
@@ -30,17 +31,21 @@ Mechanical engineering drawings encode semantics through a compact, standardized
 
 | Model | Recognition | Reasoning | Judging | **Total** |
 |---|:---:|:---:|:---:|:---:|
-| GPT-5 | 69.77 | 84.99 | 71.02 | 75.44 |
-| Gemini-3-Pro-Preview | 76.74 | 87.74 | 77.28 | 77.28 |
-| GLM-4.6V (best closed-source) | 88.37 | 86.68 | 78.91 | 78.91 |
-| MechVL-4B-SFT (Ours) | 88.37 | 85.20 | 76.36 | 76.36 |
-| **MechVL-4B-RL (Ours)** | **88.37** | **90.70** | **84.85** | **84.85** |
+| GPT-5 | 77.63 | 68.19 | 70.85 | 75.44 |
+| Gemini-3-Pro-Preview (best closed-source) | 81.56 | 57.42 | 80.52 | 77.28 |
+| GLM-4.6V (best open-source baseline) | 84.02 | 70.50 | 71.81 | 78.91 |
+| MechVL-4B-SFT (Ours) | 83.11 | 54.40 | 76.91 | 76.36 |
+| **MechVL-4B-RL (Ours)** | 89.70 | 77.04 | 82.81 | **84.85** |
 
-- **MechVL-4B-RL** achieves the best Total score (84.85), surpassing the strongest closed-source model (GLM-4.6V, 78.91) and all open-source MLLMs.
+Recognition, Reasoning, and Judging are unweighted means of their respective
+subtasks in paper Table 2; Total is the question-level aggregate, not the mean
+of those three columns. Scores are percentages (higher is better).
+
+- **MechVL-4B-RL** achieves the best Total score (84.85), surpassing the strongest evaluated closed-source baseline (Gemini-3-Pro-Preview, 77.28) by 7.57 points and the strongest open-source baseline (GLM-4.6V, 78.91) by 5.94 points. MechVL uses domain-specific post-training; general-purpose baselines do not.
 - On the **hard** subset, MechVL-4B-RL reaches **75%**, beating the best closed-source model (Qwen3-VL-Plus, 66%) by **+9 points**.
 - Ablations confirm **DAPO > GRPO > GSPO**, the value of **two-stage self-play RL** (81.95 → 84.85), and the necessity of all three reward terms.
 
-> See [§6 of the paper](https://arxiv.org/abs/2605.30794) for full tables and the 10 subtask definitions.
+> See [§5 of the paper](https://arxiv.org/abs/2605.30794) for full tables and the 10 subtask definitions.
 
 ## 📰 Release Status
 
@@ -233,7 +238,7 @@ or [xiaofengalg/MechVQA from ModelScope](https://modelscope.cn/datasets/xiaofeng
 
 ## 📊 Evaluation
 
-MechVQA evaluates MLLMs across **10 fine-grained tasks** grouped into three capability levels (Recognition / Reasoning / Judging), reported as per-level means and an overall **Total** score. See [§3 and §6 of the paper](https://arxiv.org/abs/2605.30794) for the task taxonomy, metrics, and full results.
+MechVQA evaluates MLLMs across **10 fine-grained tasks** grouped into three capability levels (Recognition / Reasoning / Judging), reported as per-level means and an overall **Total** score. See [§3 and §5 of the paper](https://arxiv.org/abs/2605.30794) for the task taxonomy, metrics, and full results.
 
 The open-source evaluator is included under [`evaluation/`](./evaluation/). It runs target-model inference, judges responses with an OpenAI-compatible judge model, and reports aggregate and metadata-level metrics.
 
@@ -288,6 +293,13 @@ Qian Kou, Xiaofeng Shi, Yulin Li, Xiaosong Qiu, Xinyang Wang, Hua Zhou, and Cao 
 Kou, Q., Shi, X., Li, Y., Qiu, X., Wang, X., Zhou, H., & Cao, D. (2026). *MechVQA: Benchmarking and enhancing multimodal LLMs on comprehensive mechanical drawing understanding.* arXiv. https://arxiv.org/abs/2605.30794
 
 </details>
+
+## 🌐 Project Website
+
+The project homepage is hosted at **https://xiaofengshi.github.io/MechVQA/**.
+Its static HTML, CSS, JavaScript, and local assets live in [`docs/`](docs/).
+GitHub Pages serves the `main` branch’s `/docs` directory.
+See [`docs/README.md`](docs/README.md) for preview, maintenance, and content provenance.
 
 ## 📄 License
 

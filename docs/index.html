@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MechVQA — Mechanical Drawing Understanding · ICML 2026</title>
+    <meta
+      name="description"
+      content="MechVQA benchmarks mechanical drawing understanding across recognition, reasoning, and judging. Explore the ICML 2026 paper, MechVL models, datasets, and code."
+    />
+    <meta name="theme-color" content="#183d45" />
+    <link rel="canonical" href="https://xiaofengshi.github.io/MechVQA/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MechVQA · ICML 2026" />
+    <meta
+      property="og:description"
+      content="A benchmark and specialized vision-language models for understanding mechanical engineering drawings."
+    />
+    <meta property="og:url" content="https://xiaofengshi.github.io/MechVQA/" />
+    <meta
+      property="og:image"
+      content="https://xiaofengshi.github.io/MechVQA/assets/overview.webp"
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="wordmark" href="#" aria-label="MechVQA home"
+          ><span class="mark" aria-hidden="true">M</span>MechVQA<span
+            class="nav-year"
+          >
+            / 2026</span
+          ></a
+        >
+        <nav aria-label="Main navigation">
+          <a href="#benchmark">Benchmark</a><a href="#results">Results</a
+          ><a href="#resources">Resources</a
+          ><a href="https://github.com/xiaofengShi/MechVQA" class="nav-code"
+            >GitHub <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero container" aria-labelledby="title">
+        <div class="hero-copy">
+          <a class="conference" href="https://icml.cc/virtual/2026/poster/66437"
+            ><span class="status-dot" aria-hidden="true"></span>ICML 2026
+            <span aria-hidden="true">↗</span></a
+          >
+          <h1 id="title">Mech<span>VQA</span></h1>
+          <p class="paper-title">
+            Benchmarking and Enhancing Multimodal LLMs on Comprehensive
+            Mechanical Drawing Understanding
+          </p>
+          <p class="hero-description">
+            From reading dimensions to reasoning across views.<br />A benchmark
+            and specialized models for the language of engineering.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://arxiv.org/abs/2605.30794"
+              >Read the paper <span aria-hidden="true">↗</span></a
+            ><a
+              class="button"
+              href="https://huggingface.co/datasets/XiaofengAlg/MechVQA"
+              >Explore the dataset <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+        <figure class="hero-figure">
+          <div class="figure-top">
+            <span>DRAWING → UNDERSTANDING</span><span>FIG. 01</span>
+          </div>
+          <a
+            href="assets/recognition.webp"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open the gear drawing at full size"
+            ><img
+              src="assets/recognition.webp"
+              alt="Dimensioned gear shaft drawing with sectional views, tolerances, and a gear parameter table"
+              width="1100"
+              height="780"
+              fetchpriority="high"
+          /></a>
+          <figcaption>
+            <span class="figure-label">RECOGNITION</span>
+            <p>
+              What is the value of the module <i>m</i> in the gear parameter
+              table?
+            </p>
+            <span class="answer">Reference answer <strong>m = 3</strong></span>
+          </figcaption>
+        </figure>
+      </section>
+      <div class="authors container">
+        <p>
+          Qian Kou<sup>1</sup><span>·</span
+          ><a href="https://orcid.org/0009-0009-6052-7713"
+            >Xiaofeng Shi<sup>1</sup></a
+          ><span>·</span>Yulin Li<sup>1,2</sup><span>·</span>Xiaosong Qiu<sup
+            >1</sup
+          ><span>·</span>Xinyang Wang<sup>3</sup><span>·</span>Hua Zhou<sup
+            >1</sup
+          ><span>·</span>Cao Dongxing<sup>3</sup>
+        </p>
+        <p class="affiliations">
+          <span><sup>1</sup> Beijing Academy of Artificial Intelligence</span
+          ><span><sup>2</sup> Institute of Information Engineering, CAS</span
+          ><span><sup>3</sup> Beijing University of Technology</span>
+        </p>
+      </div>
+      <div class="metrics-wrap">
+        <div class="container metrics">
+          <div><strong>3.3K</strong><span>Engineering drawings</span></div>
+          <div><strong>21K</strong><span>Question–answer pairs</span></div>
+          <div><strong>10</strong><span>Fine-grained tasks</span></div>
+          <div><strong>84.85</strong><span>MechVL-RL total score</span></div>
+        </div>
+        <p class="container metric-note">
+          Paper-reported dataset scale and evaluation results. See
+          <a href="#resources">resources</a> for public release sizes.
+        </p>
+      </div>
+      <section id="overview" class="section container">
+        <div class="section-heading">
+          <p class="eyebrow">01 / THE CHALLENGE</p>
+          <h2>Every line carries meaning.</h2>
+        </div>
+        <div class="intro-columns">
+          <p class="lead">
+            Mechanical drawings combine geometry, dimensions, tolerances, and
+            conventions in a single, information-dense image.
+          </p>
+          <p>
+            MechVQA tests whether multimodal models can understand that
+            language. It spans real part and assembly drawings, with questions
+            that move from visual recognition to spatial reasoning and
+            standards-aware judgment. MechVL builds on this benchmark with
+            supervised fine-tuning and two-stage self-play reinforcement
+            learning.
+          </p>
+        </div>
+        <figure class="overview-figure">
+          <a
+            href="assets/overview.webp"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open the MechVQA overview figure at full size"
+            ><img
+              src="assets/overview.webp"
+              alt="Paper Figure 1: challenges in mechanical drawing understanding and the ten tasks grouped under Recognition, Reasoning, and Judging"
+              width="1461"
+              height="780"
+              loading="lazy"
+          /></a>
+          <figcaption>
+            Benchmark overview and representative tasks.
+            <a
+              href="https://github.com/xiaofengShi/MechVQA/blob/main/paper/2605.30794v1.pdf"
+              >Figure 1, MechVQA paper</a
+            >. Select the figure to enlarge.
+          </figcaption>
+        </figure>
+      </section>
+      <section id="benchmark" class="section section-tint">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">02 / THE BENCHMARK</p>
+            <h2>Read it. Reason about it. Check it.</h2>
+            <p>
+              Three capabilities. Ten tasks. Grounded in real engineering
+              drawings.
+            </p>
+          </div>
+          <div class="taxonomy">
+            <div>
+              <span class="number">01</span>
+              <h3>Recognition</h3>
+              <p>
+                Identification &amp; Counting<br />Dimension &amp; Annotation<br />Text
+                &amp; Table<br />Item Localization
+              </p>
+            </div>
+            <div>
+              <span class="number">02</span>
+              <h3>Reasoning</h3>
+              <p>
+                Structure Understanding<br />Geometric Calculation<br />Assembly
+                Relationship<br />Projection &amp; Multi-view
+              </p>
+            </div>
+            <div>
+              <span class="number">03</span>
+              <h3>Judging</h3>
+              <p>Anomaly Detection<br />Consistency Judgment</p>
+            </div>
+          </div>
+          <div class="example-heading">
+            <h3>A closer look at the data</h3>
+            <div
+              class="example-controls"
+              role="group"
+              aria-label="Choose an example capability"
+              hidden
+            >
+              <button
+                type="button"
+                aria-pressed="true"
+                data-example="recognition"
+              >
+                Recognition</button
+              ><button
+                type="button"
+                aria-pressed="false"
+                data-example="reasoning"
+              >
+                Reasoning</button
+              ><button
+                type="button"
+                aria-pressed="false"
+                data-example="judging"
+              >
+                Judging
+              </button>
+            </div>
+          </div>
+          <article
+            class="example"
+            id="example-recognition"
+            aria-labelledby="heading-recognition"
+          >
+            <a
+              class="drawing"
+              href="assets/recognition.webp"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open recognition drawing at full size"
+              ><img
+                src="assets/recognition.webp"
+                alt="Mechanical drawing for the Dimension &amp; Annotation question"
+                width="900"
+                height="620"
+                loading="lazy"
+            /></a>
+            <div class="example-copy">
+              <p class="eyebrow">Recognition / Easy</p>
+              <h3 id="heading-recognition">Dimension &amp; Annotation</h3>
+              <p class="question">
+                What is the value of the module m in the gear parameter table?
+              </p>
+              <details>
+                <summary>Show reference answer</summary>
+                <p>The value of module m in the gear parameter table is 3.</p>
+              </details>
+              <p class="source">
+                From the
+                <a
+                  href="https://github.com/xiaofengShi/MechVQA/blob/main/benchmark_data/vqa_benchmark/mechvqa_benchmark.jsonl"
+                  >public evaluation release</a
+                >. Reference answer, not live model output.
+              </p>
+            </div>
+          </article>
+          <article
+            class="example"
+            id="example-reasoning"
+            aria-labelledby="heading-reasoning"
+          >
+            <a
+              class="drawing"
+              href="assets/reasoning.webp"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open reasoning drawing at full size"
+              ><img
+                src="assets/reasoning.webp"
+                alt="Mechanical drawing for the Assembly Relationship question"
+                width="900"
+                height="620"
+                loading="lazy"
+            /></a>
+            <div class="example-copy">
+              <p class="eyebrow">Reasoning / Hard</p>
+              <h3 id="heading-reasoning">Assembly Relationship</h3>
+              <p class="question">
+                From the right-side sectional view, deduce the function of the
+                serrations and spring, and explain how they achieve the locking
+                function of the handle.
+              </p>
+              <details>
+                <summary>Show reference answer</summary>
+                <p>
+                  The serrations provide a mechanical interlocking self-locking
+                  surface, the spring provides axial preload to maintain
+                  engagement, and compressing the spring disengages the teeth to
+                  achieve unlocking.
+                </p>
+              </details>
+              <p class="source">
+                From the
+                <a
+                  href="https://github.com/xiaofengShi/MechVQA/blob/main/benchmark_data/vqa_benchmark/mechvqa_benchmark.jsonl"
+                  >public evaluation release</a
+                >. Reference answer, not live model output.
+              </p>
+            </div>
+          </article>
+          <article
+            class="example"
+            id="example-judging"
+            aria-labelledby="heading-judging"
+          >
+            <a
+              class="drawing"
+              href="assets/judging.webp"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open judging drawing at full size"
+              ><img
+                src="assets/judging.webp"
+                alt="Mechanical drawing for the Consistency Judgment question"
+                width="900"
+                height="620"
+                loading="lazy"
+            /></a>
+            <div class="example-copy">
+              <p class="eyebrow">Judging / Medium</p>
+              <h3 id="heading-judging">Consistency Judgment</h3>
+              <p class="question">
+                Based on the table data, calculate the difference between s1 and
+                s2 for d=20 and d=60, and determine whether the adhesive pad
+                thickness varies with diameter.
+              </p>
+              <details>
+                <summary>Show reference answer</summary>
+                <p>
+                  According to the table data in the mechanical drawing: - When
+                  d=20, s1=2, s2=1, difference s1‑s2 = 1; - When d=60, s1=2.5,
+                  s2=1.5, difference s1‑s2 = 1. The difference for other
+                  diameters in the table (e.g., d=30, d=40) is also 1. Since the
+                  adhesive pad thickness equals the difference between s1 and
+                  s2, and this difference is 1 for all diameters, the adhesive
+                  pad thickness does not vary with diameter and remains
+                  constant.
+                </p>
+              </details>
+              <p class="source">
+                From the
+                <a
+                  href="https://github.com/xiaofengShi/MechVQA/blob/main/benchmark_data/vqa_benchmark/mechvqa_benchmark.jsonl"
+                  >public evaluation release</a
+                >. Reference answer, not live model output.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section id="results" class="section container">
+        <div class="results-layout">
+          <div>
+            <p class="eyebrow">03 / RESULTS</p>
+            <h2>Domain training.<br />Measurable progress.</h2>
+            <p>
+              MechVL-4B-RL achieves the highest total score among the models
+              evaluated in the paper.
+            </p>
+            <div class="gain">
+              <strong>+7.57<span>points</span></strong>
+              <p>
+                over Gemini-3-Pro-Preview,<br />the strongest closed-source
+                baseline in this evaluation.
+              </p>
+            </div>
+            <p class="source">
+              Results from
+              <a href="https://arxiv.org/html/2605.30794v1#S4.T2"
+                >Table 2, arXiv v1</a
+              >
+              (May 2026). Accuracy on the paper’s test split; higher is better.
+              MechVL receives domain-specific post-training; general-purpose
+              baselines do not. This is a paper snapshot, not a live
+              leaderboard.
+            </p>
+          </div>
+          <div class="results-table">
+            <table>
+              <caption>
+                Selected models · MechVQA total score (%)
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Model</th>
+                  <th scope="col">Total ↑</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ours">
+                  <th scope="row">
+                    MechVL-4B-RL<span>Ours · SFT + self-play RL</span>
+                  </th>
+                  <td>
+                    <div class="score-track" aria-hidden="true">
+                      <span style="width: 84.85%"></span>
+                    </div>
+                    <strong>84.85</strong>
+                  </td>
+                </tr>
+                <tr class="">
+                  <th scope="row">GLM-4.6V<span>Open-source baseline</span></th>
+                  <td>
+                    <div class="score-track" aria-hidden="true">
+                      <span style="width: 78.91%"></span>
+                    </div>
+                    <strong>78.91</strong>
+                  </td>
+                </tr>
+                <tr class="">
+                  <th scope="row">
+                    Gemini-3-Pro-Preview<span>Closed-source baseline</span>
+                  </th>
+                  <td>
+                    <div class="score-track" aria-hidden="true">
+                      <span style="width: 77.28%"></span>
+                    </div>
+                    <strong>77.28</strong>
+                  </td>
+                </tr>
+                <tr class="ours">
+                  <th scope="row">
+                    MechVL-4B-SFT<span>Ours · supervised fine-tuning</span>
+                  </th>
+                  <td>
+                    <div class="score-track" aria-hidden="true">
+                      <span style="width: 76.36%"></span>
+                    </div>
+                    <strong>76.36</strong>
+                  </td>
+                </tr>
+                <tr class="">
+                  <th scope="row">GPT-5<span>Closed-source baseline</span></th>
+                  <td>
+                    <div class="score-track" aria-hidden="true">
+                      <span style="width: 75.44%"></span>
+                    </div>
+                    <strong>75.44</strong>
+                  </td>
+                </tr>
+                <tr class="">
+                  <th scope="row">
+                    Qwen3-VL-4B-Instruct<span>Base model</span>
+                  </th>
+                  <td>
+                    <div class="score-track" aria-hidden="true">
+                      <span style="width: 60.23%"></span>
+                    </div>
+                    <strong>60.23</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="source">
+              Total is the question-level aggregate, not an unweighted mean of
+              the ten subtask scores.
+              <a href="https://arxiv.org/html/2605.30794v1#A3.SS4"
+                >Evaluation protocol ↗</a
+              >
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="method" class="section method-section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">04 / MEET MECHVL</p>
+            <h2>From a general model to an engineering specialist.</h2>
+            <p>
+              Qwen3-VL-4B-Instruct, adapted through supervised learning and
+              targeted self-play.
+            </p>
+          </div>
+          <ol class="pipeline">
+            <li>
+              <span class="step">STAGE 01</span>
+              <h3>Supervised fine-tuning</h3>
+              <p>
+                Learn drawing-grounded answers from MechVQA. Train the language
+                model while freezing the vision encoder and projector.
+              </p>
+              <strong>76.36 <span>total score</span></strong>
+            </li>
+            <li>
+              <span class="step">STAGE 02</span>
+              <h3>Full-data DAPO</h3>
+              <p>
+                Optimize on the full training split with rewards for answer
+                accuracy, response format, and explanation quality.
+              </p>
+              <strong>81.95 <span>total score</span></strong>
+            </li>
+            <li>
+              <span class="step">STAGE 03</span>
+              <h3>Targeted self-play</h3>
+              <p>
+                Resample underperforming subtasks and continue reinforcement
+                learning with the same objective and reward design.
+              </p>
+              <strong>84.85 <span>total score</span></strong>
+            </li>
+          </ol>
+          <p class="method-note">
+            Training-stage results:
+            <a href="https://arxiv.org/html/2605.30794v1#S5.T3">paper Table 3</a
+            >.
+            <a href="https://github.com/xiaofengShi/MechVQA/tree/main/EasyR1"
+              >Explore the training framework ↗</a
+            >
+          </p>
+        </div>
+      </section>
+      <section id="resources" class="section container">
+        <div class="section-heading">
+          <p class="eyebrow">05 / OPEN RESOURCES</p>
+          <h2>Build on MechVQA.</h2>
+          <p>
+            Data, checkpoints, and the tools to reproduce and extend the work.
+          </p>
+        </div>
+        <div class="resource-list">
+          <article>
+            <span class="resource-index">01</span>
+            <div>
+              <h3>Paper &amp; code</h3>
+              <p>
+                Research paper, inference scripts, SFT recipe, RL framework, and
+                evaluation pipeline.
+              </p>
+            </div>
+            <div class="resource-links">
+              <a href="https://arxiv.org/abs/2605.30794">arXiv ↗</a
+              ><a href="https://github.com/xiaofengShi/MechVQA">GitHub ↗</a>
+            </div>
+          </article>
+          <article>
+            <span class="resource-index">02</span>
+            <div>
+              <h3>Public evaluation benchmark</h3>
+              <p>
+                1,185 question–answer records and 562 drawing images, packaged
+                in the repository.
+              </p>
+            </div>
+            <div class="resource-links">
+              <a
+                href="https://github.com/xiaofengShi/MechVQA/tree/main/benchmark_data"
+                >Get benchmark ↗</a
+              ><a
+                href="https://github.com/xiaofengShi/MechVQA/tree/main/evaluation"
+                >Evaluate ↗</a
+              >
+            </div>
+          </article>
+          <article>
+            <span class="resource-index">03</span>
+            <div>
+              <h3>Public SFT dataset</h3>
+              <p>
+                12,749 training + 766 validation records; 3,371 images. VQA-only
+                release with checksums and provenance.
+              </p>
+            </div>
+            <div class="resource-links">
+              <a href="https://huggingface.co/datasets/XiaofengAlg/MechVQA"
+                >Hugging Face ↗</a
+              ><a href="https://modelscope.cn/datasets/xiaofengalg/MechVQA"
+                >ModelScope ↗</a
+              >
+            </div>
+          </article>
+          <article>
+            <span class="resource-index">04</span>
+            <div>
+              <h3>MechVL checkpoints</h3>
+              <p>
+                4B SFT and RL models. Use ModelScope for full weights; check
+                each Hugging Face model card for mirror availability.
+              </p>
+            </div>
+            <div class="resource-links">
+              <a href="https://modelscope.cn/collections/xiaofengalg/MechVQA"
+                >ModelScope ↗</a
+              ><a href="https://huggingface.co/collections/XiaofengAlg/mechvqa"
+                >Hugging Face ↗</a
+              >
+            </div>
+          </article>
+        </div>
+        <p class="source">
+          The public releases and the paper’s full dataset have different
+          scopes. Additional internal training data are not included. See the
+          <a href="https://github.com/xiaofengShi/MechVQA#-release-status"
+            >repository release status</a
+          >
+          for details.
+        </p>
+      </section>
+      <section id="citation" class="section citation-section">
+        <div class="container citation-layout">
+          <div>
+            <p class="eyebrow">06 / CITATION</p>
+            <h2>Using this work?</h2>
+            <p>
+              Please cite MechVQA if you use the benchmark, MechVL models, or
+              released training and evaluation assets.
+            </p>
+            <a href="citation.bib" download>Download BibTeX ↙</a>
+          </div>
+          <div class="citation-code">
+            <div class="code-heading">
+              <span>BIBTEX</span
+              ><button type="button" id="copy-citation" hidden>
+                Copy citation
+              </button>
+            </div>
+            <pre><code id="bibtex">@misc{kou2026mechvqabenchmarkingenhancingmultimodal,
+      title={MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding},
+      author={Qian Kou and Xiaofeng Shi and Yulin Li and Xiaosong Qiu and Xinyang Wang and Hua Zhou and Cao Dongxing},
+      year={2026},
+      eprint={2605.30794},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2605.30794}
+}</code></pre>
+            <p id="copy-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="container">
+      <a class="wordmark" href="#">MechVQA</a>
+      <p>ICML 2026 · Mechanical drawing understanding</p>
+      <div>
+        <a href="mailto:xfshi@baai.ac.cn">Contact</a
+        ><a href="https://github.com/xiaofengShi/MechVQA/blob/main/LICENSE"
+          >Code license</a
+        ><a href="https://github.com/xiaofengShi/MechVQA">GitHub ↗</a>
+      </div>
+    </footer>
+  </body>
+</html>
