@@ -7,6 +7,16 @@
 [![ModelScope](https://img.shields.io/badge/ModelScope-Collection-6b31e3.svg)](https://modelscope.cn/collections/xiaofengalg/MechVQA)
 [![Cite](https://img.shields.io/badge/Cite-CITATION.cff-0f766e.svg)](CITATION.cff)
 
+## 🌐 Project Homepage
+
+**[Visit the MechVQA project homepage →](https://xiaofengshi.github.io/MechVQA/)**
+
+<https://xiaofengshi.github.io/MechVQA/>
+
+Explore the paper overview, interactive benchmark examples, experimental results,
+training method, datasets, model checkpoints, and citation.
+
+---
 
 > **Official code repository** for the ICML 2026 paper *"MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding"*.
 
